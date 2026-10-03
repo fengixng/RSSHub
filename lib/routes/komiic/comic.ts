@@ -1,6 +1,6 @@
-import { Route } from '@/types';
-import { parseDate } from '@/utils/parse-date';
+import type { Route } from '@/types';
 import got from '@/utils/got';
+import { parseDate } from '@/utils/parse-date';
 
 export const route: Route = {
     path: '/comic/:id',
@@ -14,6 +14,7 @@ export const route: Route = {
         supportBT: false,
         supportPodcast: false,
         supportScihub: false,
+        nsfw: true,
     },
     radar: [
         {
@@ -35,12 +36,14 @@ async function handler(ctx) {
         json: {
             operationName: 'comicById',
             variables: { comicId: id },
-            query: `query comicById($comicId: ID!) {
-                comicById(comicId: $comicId) {
-                    title
-                    imageUrl
+            query: /* GraphQL */ `
+                query comicById($comicId: ID!) {
+                    comicById(comicId: $comicId) {
+                        title
+                        imageUrl
+                    }
                 }
-            }`,
+            `,
         },
     });
 
@@ -50,15 +53,17 @@ async function handler(ctx) {
         json: {
             operationName: 'chapterByComicId',
             variables: { comicId: id },
-            query: `query chapterByComicId($comicId: ID!) {
-                chaptersByComicId(comicId: $comicId) {
-                    id
-                    serial
-                    type
-                    dateUpdated
-                    size
+            query: /* GraphQL */ `
+                query chapterByComicId($comicId: ID!) {
+                    chaptersByComicId(comicId: $comicId) {
+                        id
+                        serial
+                        type
+                        dateUpdated
+                        size
+                    }
                 }
-            }`,
+            `,
         },
     });
 
